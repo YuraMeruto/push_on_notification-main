@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:workmanager/workmanager.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _Home extends State<Home> {
     super.initState();
     // Timezoneの初期化
     tz.initializeTimeZones();
-
+    // WorkManagerの初期化
     // 通知の初期化
     var initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -62,11 +63,26 @@ class _Home extends State<Home> {
 //    openAppSettings();
 
     const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
+        AndroidNotificationDetails(
+      'your channel id',
+      'your channel name',
+      channelDescription: 'your channel description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    // 通知チャンネルの設定 (Android 8.0以上)
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'your_channel_id', // チャンネルID
+      'your_channel_name', // チャンネル名
+      description: 'your_channel_description', // チャンネルの説明
+      importance: Importance.max, // 通知の重要度
+      playSound: true, // サウンドを鳴らす
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     // await flutterLocalNotificationsPlugin.show(
@@ -76,9 +92,9 @@ class _Home extends State<Home> {
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidNotificationDetails);
 
-    tz.TZDateTime time1 = tz.TZDateTime(tz.local, 2024, 11, 6, 21);
-    time1 = tz.TZDateTime.now(tz.local);
-    time1 = time1.add(Duration(seconds: 10));
+    var localtion = tz.getLocation('Asia/Tokyo');
+    var time1 = tz.TZDateTime.now(localtion);
+    time1 = time1.add(Duration(seconds: 5));
     print(time1);
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
@@ -87,10 +103,27 @@ class _Home extends State<Home> {
       time1,
       notificationDetails,
       androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.alarmClock,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
     );
-    print("hogeeeee");
+
+    time1 = tz.TZDateTime.now(localtion);
+    time1 = time1.add(Duration(seconds: 10));
+    print(time1);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      1,
+      '通知タイトル02',
+      '通知内容02',
+      time1,
+      notificationDetails,
+      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.alarmClock,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+    );
+
+    print("バックグラウンド通知がスケジュールされました");
   }
 
   @override
