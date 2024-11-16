@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:push_on_notification/home.dart';
 import 'package:push_on_notification/memo_input_page.dart';
+import 'package:push_on_notification/remaind_model.dart';
 import 'package:push_on_notification/remiand_date_page.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -28,8 +29,15 @@ class MyApp extends StatelessWidget {
       home: Home(),
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => new Home(),
-        '/memo_input': (BuildContext context) => new MemoInputPage(),
-        '/remaind_date': (BuildContext context) => new RemiandDatePage(),
+        '/memo_input': (BuildContext context) => new MemoInputPage(RemaindModel(
+              title: "",
+              memo: "",
+            )),
+        '/remaind_date': (BuildContext context) =>
+            new RemiandDatePage(RemaindModel(
+              title: "",
+              memo: "",
+            )),
       },
     );
   }

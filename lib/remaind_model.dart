@@ -1,14 +1,25 @@
 class RemaindModel {
-  String _memo = '';
-  DateTime _remaindTime;
-  String get memo => _memo;
-  DateTime get remaindTime => _remaindTime;
-  RemaindModel(String this._memo, DateTime this._remaindTime);
+  int? id;
+  String title = '';
+  String memo = '';
+  DateTime? remindTime;
 
-  Map<String, dynamic> toMap() {
+  RemaindModel(
+      {this.id, required this.title, required this.memo, this.remindTime});
+  Map<String, dynamic> toMap({bool is_convert_datetime = false}) {
+    if (is_convert_datetime) {
+      return {
+        'id': id,
+        'title': title,
+        'memo': memo,
+        'remaind_time': remindTime.toString(),
+      };
+    }
     return {
+      'id': id,
+      'title': title,
       'memo': memo,
-      'remaind_time': remaindTime,
+      'remaind_time': remindTime,
     };
   }
 }
