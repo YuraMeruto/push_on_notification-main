@@ -42,40 +42,66 @@ class _Home extends State<Home> {
               return Text('エラーが発生しました: ${snapshot.error}');
             } else if (snapshot.hasData) {
               // データが正常に取得できた場合
-              print(snapshot.data?.length!);
+              // 日付をソート
+              print("aaaaa");
+
+              var isRemindList = snapshot.data!.where((element) {
+                return element.is_remind == 1;
+              }).toList();
+              var isRemindNotList = snapshot.data!.where((element) {
+                return element.is_remind == 0;
+              }).toList();
+              isRemindList
+                  .sort((a, b) => a.remindTime!.compareTo(b.remindTime!));
+              var sortList = isRemindNotList + isRemindList;
               return ListView.builder(
-                  itemCount: snapshot.data?.length,
+                  itemCount: sortList.length,
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {},
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      MemoInputPage(snapshot.data![index])));
-                        },
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(format
-                                    .format(snapshot.data![index].remindTime!)),
+                    return Dismissible(
+                      key: Key(index.toString()),
+                      onDismissed: (direction) async {
+                        await repository.delete(sortList[index]);
+                        setState(() {
+                          sortList.removeAt(index); // リストからアイテムを削除
+                        });
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          MemoInputPage(sortList[index])));
+                            },
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: sortList[index].is_remind == 1
+                                        ? Text(format.format(
+                                            sortList[index].remindTime!))
+                                        : Text(""),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    child: Text(sortList[index].title),
+                                  ),
+                                  Divider(),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(sortList[index].memo),
+                                  ),
+                                ],
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                child: Text(snapshot.data![index].title),
-                              ),
-                              Divider(),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(snapshot.data![index].memo),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
                       ),
                     );
                   });

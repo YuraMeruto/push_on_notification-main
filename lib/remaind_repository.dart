@@ -24,6 +24,11 @@ class RemaindRepository {
         where: "id = ?", whereArgs: [model.id]);
   }
 
+  Future<void> delete(RemaindModel model) async {
+    var database = await getDatabase();
+    database.delete('remaind', where: "id = ?", whereArgs: [model.id]);
+  }
+
   Future<RemaindModel> getModel(int targetId) async {
     // ローカルから取得
     var database = await getDatabase();
@@ -34,7 +39,11 @@ class RemaindRepository {
       int id = m["id"];
       String title = m['title'];
       String memo = m['memo'];
-      DateTime remaind_time = DateTime.parse(m["remaind_time"]);
+      DateTime? remaind_time = null;
+
+      if (m["remaind_time"] != null) {
+        remaind_time = DateTime.parse(m["remaind_time"]);
+      }
 
       return RemaindModel(
         id: id,
@@ -51,17 +60,23 @@ class RemaindRepository {
     var database = await getDatabase();
 
     var results = await database.query('remaind');
+
     return results.map((Map<String, dynamic> m) {
       int id = m["id"];
       String title = m['title'];
       String memo = m['memo'];
-      DateTime remaind_time = DateTime.parse(m["remaind_time"]);
+      DateTime? remaind_time = null;
+      int isRemind = m['is_remind'];
 
+      if (m["remaind_time"] != "null") {
+        remaind_time = DateTime.parse(m["remaind_time"]);
+      }
       return RemaindModel(
         id: id,
         title: title,
         memo: memo,
         remindTime: remaind_time,
+        is_remind: isRemind,
       );
     }).toList();
   }
@@ -78,13 +93,14 @@ class RemaindRepository {
     return await openDatabase(path, version: 1, onOpen: (
       Database db,
     ) async {
-//      await db.execute('drop table  IF EXISTS remaind');
+      await db.execute('drop table  IF EXISTS remaind');
 
       await db.execute('CREATE TABLE IF NOT EXISTS remaind ('
           '  id INTEGER PRIMARY KEY AUTOINCREMENT,'
           '  title TEXT,'
           '  memo TEXT,'
-          '  remaind_time Text'
+          '  remaind_time Text,'
+          '  is_remind INTEGER'
           ')');
     });
   }
