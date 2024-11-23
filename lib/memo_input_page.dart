@@ -84,7 +84,7 @@ class _MemoInputPage extends State<MemoInputPage>
                 TextField(
                   controller: _titleController,
                   decoration: InputDecoration(
-                    labelText: 'タイトルを記入',
+                    labelText: 'メモを記入',
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (value) {
@@ -98,7 +98,7 @@ class _MemoInputPage extends State<MemoInputPage>
                   controller: _memoController,
                   maxLines: null,
                   decoration: InputDecoration(
-                    labelText: 'メモしたい内容を記入',
+                    labelText: '詳細を記入　',
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (value) {
@@ -142,9 +142,23 @@ class _MemoInputPage extends State<MemoInputPage>
                   },
                   child: const Text('日付選択'),
                 ),
-                model.remindTime == null
-                    ? Text("")
-                    : Text("設定した日付  " + format.format(model.remindTime!)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    model.remindTime == null
+                        ? Text("")
+                        : Text("設定した日付  " + format.format(model.remindTime!)),
+                    model.remindTime == null
+                        ? Container()
+                        : ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                model.remindTime = null;
+                              });
+                            },
+                            child: Text('クリア')),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -168,8 +182,11 @@ class _MemoInputPage extends State<MemoInputPage>
                           } else {
                             repository.update(model);
                           }
-                          print(model.remindTime);
                           if (model.remindTime != null) {
+                            if (model.memo.isEmpty) {
+                              model.memo = " ";
+                            }
+
                             await showNotification(model);
                           }
                           Navigator.of(context).pushReplacementNamed("/home");
@@ -231,7 +248,6 @@ class _MemoInputPage extends State<MemoInputPage>
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
     );
-
     print("バックグラウンド通知がスケジュールされました");
   }
 }

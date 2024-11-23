@@ -24,12 +24,15 @@ class _Home extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // Timezoneの初期化
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Center(child: Text('メモ')),
+        automaticallyImplyLeading: false,
+      ),
       body: Center(
         child: FutureBuilder<List<RemaindModel>>(
           future: repository.getModelList(), // 非同期関数を指定
@@ -76,13 +79,22 @@ class _Home extends State<Home> {
                                           MemoInputPage(sortList[index])));
                             },
                             child: Card(
+                              color: (sortList[index].remindTime != null &&
+                                      sortList[index]
+                                          .remindTime!
+                                          .isBefore(DateTime.now()))
+                                  ? Colors.grey
+                                  : Colors.white,
                               child: Column(
                                 children: [
                                   Container(
                                     alignment: Alignment.centerLeft,
                                     child: sortList[index].is_remind == 1
-                                        ? Text(format.format(
-                                            sortList[index].remindTime!))
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 8, top: 8),
+                                            child: Text(format.format(
+                                                sortList[index].remindTime!)))
                                         : Text(""),
                                   ),
                                   Container(
@@ -91,6 +103,8 @@ class _Home extends State<Home> {
                                   ),
                                   Divider(),
                                   Container(
+                                    padding:
+                                        EdgeInsets.only(left: 8, bottom: 8),
                                     alignment: Alignment.centerLeft,
                                     child: Text(sortList[index].memo),
                                   ),
