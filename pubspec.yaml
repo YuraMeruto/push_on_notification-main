@@ -58,10 +58,14 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
-flutter_launcher_icons:       
+
+flutter_icons:
   android: true
-  ios: true
-  image_path: "assets/icon/app_icon.png"
+  ios: false # iOS 用にもアイコン設定する場合は true に変更
+  image_path: "assets/images/app_icon.png" # アイコン画像のパス
+#  adaptive_icon_background: "#FFFFFF" # 背景色（任意）
+#  adaptive_icon_foreground: "assets/images/app_icon.png" # 前景アイコン（任意
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
