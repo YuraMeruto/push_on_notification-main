@@ -93,7 +93,7 @@ class RemaindRepository {
     return await openDatabase(path, version: 1, onOpen: (
       Database db,
     ) async {
-      await db.execute('drop table  IF EXISTS remaind');
+//      await db.execute('drop table  IF EXISTS remaind');
 
       await db.execute('CREATE TABLE IF NOT EXISTS remaind ('
           '  id INTEGER PRIMARY KEY AUTOINCREMENT,'
