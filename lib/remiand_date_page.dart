@@ -95,9 +95,6 @@ class _RemainDatePage extends State<RemiandDatePage>
                   },
                   child: const Text('日付選択'),
                 ),
-                model.remindTime == null
-                    ? Text("")
-                    : Text("設定した日付  " + format.format(model.remindTime!)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[

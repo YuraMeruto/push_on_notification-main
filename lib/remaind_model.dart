@@ -4,6 +4,7 @@ class RemaindModel {
   String memo = '';
   DateTime? remindTime;
   int is_remind;
+  
 
   RemaindModel(
       {this.id,

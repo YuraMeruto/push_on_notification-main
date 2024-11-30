@@ -21,9 +21,21 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   var repository = new RemaindRepository();
   DateFormat format = DateFormat('yyyy/MM/dd hh:mm');
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   @override
   void initState() {
     super.initState();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   @override
@@ -46,8 +58,6 @@ class _Home extends State<Home> {
             } else if (snapshot.hasData) {
               // データが正常に取得できた場合
               // 日付をソート
-              print("aaaaa");
-
               var isRemindList = snapshot.data!.where((element) {
                 return element.is_remind == 1;
               }).toList();
@@ -63,6 +73,7 @@ class _Home extends State<Home> {
                     return Dismissible(
                       key: Key(index.toString()),
                       onDismissed: (direction) async {
+                        await cancelNotification(sortList[index]);
                         await repository.delete(sortList[index]);
                         setState(() {
                           sortList.removeAt(index); // リストからアイテムを削除
@@ -140,5 +151,9 @@ class _Home extends State<Home> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> cancelNotification(RemaindModel model) async {
+    flutterLocalNotificationsPlugin.cancel(model.id!);
   }
 }

@@ -186,9 +186,11 @@ class _MemoInputPage extends State<MemoInputPage>
                             if (model.memo.isEmpty) {
                               model.memo = " ";
                             }
-
                             await showNotification(model);
+                          } else if (model.id != null) {
+                            await cancelNotification(model);
                           }
+
                           Navigator.of(context).pushReplacementNamed("/home");
                         },
                         child: Text('完了')),
@@ -248,6 +250,9 @@ class _MemoInputPage extends State<MemoInputPage>
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
     );
-    print("バックグラウンド通知がスケジュールされました");
+  }
+
+  Future<void> cancelNotification(RemaindModel model) async {
+    flutterLocalNotificationsPlugin.cancel(model.id!);
   }
 }
