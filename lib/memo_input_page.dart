@@ -30,7 +30,7 @@ class _MemoInputPage extends State<MemoInputPage>
   TextEditingController _titleController = TextEditingController();
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   bool _isError = false;
-  DateFormat format = DateFormat('yyyy/MM/dd hh:mm');
+  DateFormat format = DateFormat('yyyy/MM/dd HH:mm');
 
   RemaindModel model;
   @override

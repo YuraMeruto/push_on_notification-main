@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   var repository = new RemaindRepository();
-  DateFormat format = DateFormat('yyyy/MM/dd hh:mm');
+  DateFormat format = DateFormat('yyyy/MM/dd HH:mm');
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
